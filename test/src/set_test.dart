@@ -1,4 +1,4 @@
-import 'package:deep_collection/deep_set.dart';
+import 'package:deep_collection/deep_collection.dart';
 import 'package:test/test.dart';
 
 void main() {
