@@ -1,3 +1,7 @@
+## [0.1.4] - 1st of September 2020
+
+- Map: add `deepIntersectionByKey`
+
 ## [0.1.3] - 1st of September 2020
 
 - Map: add `deepDifferenceByKey`
