@@ -6,7 +6,7 @@ extension DeepSet<E> on Set<E> {
   /// It reverses nested [List], [Set] or [Map] (primitive collections),
   /// nested primitive collections inside nested primitive collections
   /// and so on.
-  Set<E> deepReverse<E>() =>
+  Set<E> deepReverse() =>
       toList(growable: false).deepReverse().toSet().cast<E>();
 
   /// Returns new instance of [Set], which is recursively sorted by values.
@@ -25,5 +25,5 @@ extension DeepSet<E> on Set<E> {
   /// 3. All [List] sorted by length
   /// 4. All [Set] sorted by length
   /// 5. All [Map] sorted by length
-  Set<E> deepSort<E>() => toList(growable: false).deepSort().toSet().cast<E>();
+  Set<E> deepSort() => toList(growable: false).deepSort().toSet().cast<E>();
 }

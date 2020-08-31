@@ -42,7 +42,7 @@ extension DeepMap<K, V> on Map<K, V> {
   /// Sort order:
   /// 1. [int] and [double] keys
   /// 2. [String] keys
-  Map<K, V> deepSortByKey<K, V>() => LinkedHashMap.fromIterable(
+  Map<K, V> deepSortByKey() => LinkedHashMap.fromIterable(
       <dynamic>[...keys.toList(growable: false).deepSort()],
       key: (k) => k,
       value: (k) {
@@ -73,7 +73,7 @@ extension DeepMap<K, V> on Map<K, V> {
   /// 3. All [List] sorted by length
   /// 4. All [Set] sorted by length
   /// 5. All [Map] sorted by length
-  Map<K, V> deepSortByValue<K, V>() {
+  Map<K, V> deepSortByValue() {
     var intAndDoubleValues = Map<dynamic, dynamic>.fromEntries(entries
         .where((element) => element?.value is int || element?.value is double));
 

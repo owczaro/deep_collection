@@ -7,7 +7,7 @@ extension DeepList<E> on List<E> {
   /// It reverses nested [List], [Set] or [Map] (primitive collections),
   /// nested primitive collections inside nested primitive collections
   /// and so on.
-  List<E> deepReverse<E>() {
+  List<E> deepReverse() {
     var result = <E>[];
     for (var i in List.generate(length, (index) => index++).reversed) {
       var element;
@@ -42,7 +42,7 @@ extension DeepList<E> on List<E> {
   /// 3. All [List] sorted by length
   /// 4. All [Set] sorted by length
   /// 5. All [Map] sorted by length
-  List<E> deepSort<E>() {
+  List<E> deepSort() {
     var intDoubleValues = <dynamic>[...whereType<int>(), ...whereType<double>()]
       ..sort();
     var stringValues = <String>[...whereType<String>()]..sort();
