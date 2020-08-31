@@ -34,7 +34,7 @@ void main() {
     },
   };
 
-  final expectedDiff = {
+  final expectedDiffByValue = {
     'a': 'b',
     'd': {'a': 'f'},
     's': {'s': 'ss'},
@@ -47,9 +47,25 @@ void main() {
     }
   };
 
-  test('diff complex', () {
-    final diff = map1.deepDifference(map2);
+  final expectedDiffByKey = {
+    's': {'s': 'ss'},
+    'c': {null: null},
+    false: {
+      'x': {
+        false: {false: false}
+      }
+    }
+  };
 
-    expect(diff.toString(), equals(expectedDiff.toString()));
+  test('diff by value complex', () {
+    final diff = map1.deepDifferenceByValue(map2);
+
+    expect(diff.toString(), equals(expectedDiffByValue.toString()));
+  });
+
+  test('diff by key complex', () {
+    final diff = map1.deepDifferenceByKey(map2);
+
+    expect(diff.toString(), equals(expectedDiffByKey.toString()));
   });
 }

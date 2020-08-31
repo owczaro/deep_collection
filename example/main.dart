@@ -56,9 +56,13 @@ void main() {
   print('Should be: {a: aa, z: azz, c: cc, y: {q: qq, x: xx}}');
   print(baseMap.deepSortByValue());
 
-  print('\n_________________ Map: Deep diff ___________________________');
+  print('\n_______________ Map: Deep diff by value __________________________');
   print('Should be: {z: azz, y: {x: xx}}');
-  print(baseMap.deepDifference(mapToCompare));
+  print(baseMap.deepDifferenceByValue(mapToCompare));
+
+  print('\n_______________ Map: Deep diff by key __________________________');
+  print('Should be: {z: azz}');
+  print(baseMap.deepDifferenceByKey(mapToCompare));
 
   print('\n________________ Map: Deep intersection ______________________');
   print('Should be: {a: aa, c: cc, y: {q: qq}}');
