@@ -1,4 +1,8 @@
-## [0.1.0] - 31th of August 2020
+## [0.1.2] - 31th of August 2020
+
+- Fold all libraries into one
+
+## [0.1.1] - 31th of August 2020
 
 - Move examples into one file
 - Remove shadowing type parameters

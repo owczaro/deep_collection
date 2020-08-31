@@ -1,5 +1,4 @@
-import 'package:deep_collection/deep_list.dart';
-import 'package:deep_collection/src/list.dart';
+import 'package:deep_collection/deep_collection.dart';
 import 'package:test/test.dart';
 
 void main() {
