@@ -145,19 +145,45 @@ extension DeepMap<K, V> on Map<K, V> {
   /// According to complement in set theory (for clarity see Venn Diagrams):
   /// A - [this]
   /// B - [toCompare]
-  /// Difference (relative complement): A \ B
-  Map deepDifference(Map toCompare) {
+  /// Difference in values (relative complement): A \ B
+  Map deepDifferenceByValue(Map toCompare) {
     var diff = {};
     forEach((key, value) {
       if (!toCompare.containsKey(key)) {
         diff.addEntries([MapEntry(key, value)]);
       } else if (value is Map && toCompare[key] is Map) {
-        var deepDiff = value.deepDifference(toCompare[key]);
+        var deepDiff = value.deepDifferenceByValue(toCompare[key]);
         if (deepDiff.isNotEmpty) {
           diff.addEntries([MapEntry(key, deepDiff)]);
         }
       } else if (value?.runtimeType != toCompare[key]?.runtimeType ||
           value != toCompare[key]) {
+        diff.addEntries([MapEntry(key, value)]);
+      }
+    });
+
+    return diff;
+  }
+
+  /// Returns new instance of [Map]
+  /// containing values, which key differs in [toCompare].
+  /// Does not work with nested [List] and [Set] yet.
+  ///
+  /// According to complement in set theory (for clarity see Venn Diagrams):
+  /// A - [this]
+  /// B - [toCompare]
+  /// Difference in keys (relative complement): A \ B
+  Map deepDifferenceByKey(Map toCompare) {
+    var diff = {};
+    forEach((key, value) {
+      if (!toCompare.containsKey(key)) {
+        diff.addEntries([MapEntry(key, value)]);
+      } else if (value is Map && toCompare[key] is Map) {
+        var deepDiff = value.deepDifferenceByKey(toCompare[key]);
+        if (deepDiff.isNotEmpty) {
+          diff.addEntries([MapEntry(key, deepDiff)]);
+        }
+      } else if (value is Map) {
         diff.addEntries([MapEntry(key, value)]);
       }
     });

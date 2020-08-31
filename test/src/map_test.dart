@@ -384,7 +384,7 @@ void main() {
 
   // ###########################################################################
 
-  group('Map - deepDifference()', () {
+  group('Map - deepDifferenceByValue()', () {
     test('no diff', () {
       final map1 = {
         'f': false,
@@ -409,7 +409,7 @@ void main() {
         'e': true,
       };
       ;
-      final diff = map1.deepDifference(map2);
+      final diff = map1.deepDifferenceByValue(map2);
 
       expect(diff, hasLength(0));
     });
@@ -438,7 +438,7 @@ void main() {
         'e': true,
       };
       ;
-      final diff = map1.deepDifference(map2);
+      final diff = map1.deepDifferenceByValue(map2);
 
       expect(diff, hasLength(1));
       expect(diff['g'], equals(3.3));
@@ -468,7 +468,7 @@ void main() {
         'e': true,
       };
       ;
-      final diff = map1.deepDifference(map2);
+      final diff = map1.deepDifferenceByValue(map2);
 
       expect(diff, hasLength(2));
       expect(diff.keys, orderedEquals(['f', 'e']));
@@ -495,7 +495,7 @@ void main() {
         'e': true,
       };
       ;
-      final diff = map1.deepDifference(map2);
+      final diff = map1.deepDifferenceByValue(map2);
 
       expect(diff.values, orderedEquals([false, 'aa', 3.3, 3]));
       expect(diff.keys, orderedEquals(['f', 'a', 'g', 'b']));
@@ -529,7 +529,7 @@ void main() {
         },
       };
       ;
-      final diff = map1.deepDifference(map2);
+      final diff = map1.deepDifferenceByValue(map2);
 
       expect(diff, hasLength(0));
     });
@@ -562,7 +562,7 @@ void main() {
         },
       };
       ;
-      final diff = map1.deepDifference(map2);
+      final diff = map1.deepDifferenceByValue(map2);
 
       expect(diff, hasLength(2));
       expect(diff.keys, unorderedEquals(['e', 'j']));
@@ -596,7 +596,224 @@ void main() {
         },
       };
       ;
-      final diff = map1.deepDifference(map2);
+      final diff = map1.deepDifferenceByValue(map2);
+
+      expect(diff, hasLength(1));
+      expect((diff['j'] as Map).keys, orderedEquals(['f', 'a']));
+      expect((diff['j'] as Map).values, orderedEquals([false, 'aa']));
+    });
+  });
+
+  // ###########################################################################
+
+  group('Map - deepDifferenceByKey()', () {
+    test('no diff', () {
+      final map1 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      final map2 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final diff = map1.deepDifferenceByKey(map2);
+
+      expect(diff, hasLength(0));
+    });
+
+    test('no diff in keys - value diff under `g` key - double vs string', () {
+      final map1 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      final map2 = {
+        'f': false,
+        'a': 'aa',
+        'g': '3.3',
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final diff = map1.deepDifferenceByKey(map2);
+
+      expect(diff, hasLength(0));
+    });
+
+    test('swap values from `f` and `e` - no keys diff', () {
+      final map1 = {
+        'f': true,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': false,
+      };
+      final map2 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final diff = map1.deepDifferenceByKey(map2);
+
+      expect(diff, hasLength(0));
+    });
+
+    test('missing few keys', () {
+      final map1 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final diff = map1.deepDifferenceByKey(map2);
+
+      expect(diff.values, orderedEquals([false, 'aa', 3.3, 3]));
+      expect(diff.keys, orderedEquals(['f', 'a', 'g', 'b']));
+    });
+
+    test('nested map - no diff', () {
+      final map1 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      ;
+      final diff = map1.deepDifferenceByKey(map2);
+
+      expect(diff, hasLength(0));
+    });
+
+    test('nested map - swap keys `e` & `j` - submap under `j` differs', () {
+      final map1 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'j': true,
+        'e': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      ;
+      final diff = map1.deepDifferenceByKey(map2);
+
+      expect(diff.keys, orderedEquals(['j']));
+      expect((diff['j'] as Map).keys, orderedEquals(['f', 'a', 'g', 'b']));
+    });
+
+    test('nested map - diff in nested map', () {
+      final map1 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      ;
+      final diff = map1.deepDifferenceByKey(map2);
 
       expect(diff, hasLength(1));
       expect((diff['j'] as Map).keys, orderedEquals(['f', 'a']));
