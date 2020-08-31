@@ -198,18 +198,46 @@ extension DeepMap<K, V> on Map<K, V> {
   /// According to complement in set theory (for clarity see Venn Diagrams):
   /// A - [this]
   /// B - [toCompare]
-  /// Intersection: A ⋂ B
-  Map deepIntersection(Map toCompare) {
+  /// Intersection in values: A ⋂ B
+  Map deepIntersectionByValue(Map toCompare) {
     var intersection = {};
     forEach((key, value) {
       if (toCompare.containsKey(key)) {
         if (value is Map && toCompare[key] is Map) {
-          var deepIntersection = value.deepIntersection(toCompare[key]);
+          var deepIntersection = value.deepIntersectionByValue(toCompare[key]);
           if (deepIntersection.isNotEmpty) {
             intersection.addEntries([MapEntry(key, deepIntersection)]);
           }
         } else if (value?.runtimeType == toCompare[key]?.runtimeType &&
             value == toCompare[key]) {
+          intersection.addEntries([MapEntry(key, value)]);
+        }
+      }
+    });
+
+    return intersection;
+  }
+
+  /// Returns new instance of [Map]
+  /// containing all values, which key exists in both maps.
+  /// Does not work with nested [List] and [Set] yet.
+  ///
+  /// According to complement in set theory (for clarity see Venn Diagrams):
+  /// A - [this]
+  /// B - [toCompare]
+  /// Intersection in keys: A ⋂ B
+  Map deepIntersectionByKey(Map toCompare) {
+    var intersection = {};
+    forEach((key, value) {
+      if (toCompare.containsKey(key)) {
+        if (value is Map && toCompare[key] is Map) {
+          var deepIntersection = value.deepIntersectionByKey(toCompare[key]);
+          if (deepIntersection.isNotEmpty) {
+            intersection.addEntries([MapEntry(key, deepIntersection)]);
+          }
+        } else if (value is Map && toCompare[key] is! Map) {
+          intersection.addEntries([MapEntry(key, {})]);
+        } else {
           intersection.addEntries([MapEntry(key, value)]);
         }
       }

@@ -25,8 +25,8 @@ Extends `List`, `Set` and `Map` in order to add commonly used recursive methods 
 
 - Deeply sort (by keys or values)
 - Deeply reverse
-- Deeply find intersections (by values) - does not accept nested [List] or [Set]
-- Deeply find differences (by values) - does not accept nested [List] or [Set]
+- Deeply find intersections (by keys and values) - does not accept nested [List] or [Set]
+- Deeply find differences (by keys and values) - does not accept nested [List] or [Set]
 
 
 ## Implementation

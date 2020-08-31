@@ -823,7 +823,7 @@ void main() {
 
   // ###########################################################################
 
-  group('Map - deepIntersection()', () {
+  group('Map - deepIntersectionByValue()', () {
     test('All intersection', () {
       final map1 = {
         'f': false,
@@ -848,7 +848,7 @@ void main() {
         'e': true,
       };
       ;
-      final intersection = map1.deepIntersection(map2);
+      final intersection = map1.deepIntersectionByValue(map2);
 
       expect(intersection.keys,
           orderedEquals(['f', 'a', 'g', 'b', 'h', 'c', 'i', 'd', 'e']));
@@ -880,7 +880,7 @@ void main() {
         'e': true,
       };
       ;
-      final intersection = map1.deepIntersection(map2);
+      final intersection = map1.deepIntersectionByValue(map2);
 
       expect(intersection.keys,
           orderedEquals(['f', 'a', 'b', 'h', 'c', 'i', 'd', 'e']));
@@ -910,7 +910,7 @@ void main() {
         'e': true,
       };
       ;
-      final intersection = map1.deepIntersection(map2);
+      final intersection = map1.deepIntersectionByValue(map2);
 
       expect(intersection.keys,
           orderedEquals(['a', 'g', 'b', 'h', 'c', 'i', 'd']));
@@ -936,7 +936,7 @@ void main() {
         'e': true,
       };
       ;
-      final intersection = map1.deepIntersection(map2);
+      final intersection = map1.deepIntersectionByValue(map2);
 
       expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e']));
     });
@@ -969,7 +969,7 @@ void main() {
         },
       };
       ;
-      final intersection = map1.deepIntersection(map2);
+      final intersection = map1.deepIntersectionByValue(map2);
 
       expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e', 'j']));
       expect(
@@ -1006,7 +1006,7 @@ void main() {
         },
       };
       ;
-      final intersection = map1.deepIntersection(map2);
+      final intersection = map1.deepIntersectionByValue(map2);
 
       expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd']));
     });
@@ -1037,11 +1037,235 @@ void main() {
         },
       };
       ;
-      final intersection = map1.deepIntersection(map2);
+      final intersection = map1.deepIntersectionByValue(map2);
 
       expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e', 'j']));
       expect((intersection['j'] as Map).keys, orderedEquals(['g', 'b']));
       expect((intersection['j'] as Map).values, orderedEquals([3.3, 3]));
+    });
+  });
+
+  // ###########################################################################
+
+  group('Map - deepIntersectionByKey()', () {
+    test('All intersection', () {
+      final map1 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      final map2 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final intersection = map1.deepIntersectionByKey(map2);
+
+      expect(intersection.keys,
+          orderedEquals(['f', 'a', 'g', 'b', 'h', 'c', 'i', 'd', 'e']));
+    });
+
+    test('all keys intersect: diff in type under `g` - double vs string', () {
+      final map1 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      final map2 = {
+        'f': false,
+        'a': 'aa',
+        'g': '3.3',
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final intersection = map1.deepIntersectionByKey(map2);
+
+      expect(intersection.keys,
+          orderedEquals(['f', 'a', 'g', 'b', 'h', 'c', 'i', 'd', 'e']));
+    });
+
+    test('all keys intersect: swap values from `f` and `e`', () {
+      final map1 = {
+        'f': true,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': false,
+      };
+      final map2 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final intersection = map1.deepIntersectionByKey(map2);
+
+      expect(intersection.keys,
+          orderedEquals(['f', 'a', 'g', 'b', 'h', 'c', 'i', 'd', 'e']));
+    });
+
+    test('one diff per type - except null', () {
+      final map1 = {
+        'f': false,
+        'a': 'aa',
+        'g': 3.3,
+        'b': 3,
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+      };
+      ;
+      final intersection = map1.deepIntersectionByKey(map2);
+
+      expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e']));
+    });
+
+    test('nested map - no diff', () {
+      final map1 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      ;
+      final intersection = map1.deepIntersectionByKey(map2);
+
+      expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e', 'j']));
+      expect(
+          (intersection['j'] as Map).keys, orderedEquals(['f', 'a', 'g', 'b']));
+      expect((intersection['j'] as Map).values,
+          orderedEquals([false, 'aa', 3.3, 3]));
+    });
+
+    test('nested map - swap keys `e` & `j`', () {
+      final map1 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'j': true,
+        'e': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      ;
+      final intersection = map1.deepIntersectionByKey(map2);
+
+      expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e', 'j']));
+      expect(intersection['e'], isTrue);
+      expect(intersection['j'], isMap);
+      expect(intersection['j'], hasLength(0));
+    });
+
+    test('nested map - diff in nested map', () {
+      final map1 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'f': false,
+          'a': 'aa',
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      final map2 = {
+        'h': 'hh',
+        'c': 2.2,
+        'i': 1,
+        'd': null,
+        'e': true,
+        'j': {
+          'g': 3.3,
+          'b': 3,
+        },
+      };
+      ;
+      final intersection = map1.deepIntersectionByKey(map2);
+
+      expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e', 'j']));
+      expect((intersection['j'] as Map).keys, orderedEquals(['g', 'b']));
     });
   });
 }
