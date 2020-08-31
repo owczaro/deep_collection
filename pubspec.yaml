@@ -1,0 +1,12 @@
+name: deep_collection
+description: Extends [List], [Set] and [Map] in order to add commonly used recursive methods such as sorting, reversing, finding intersections or differences.
+version: 0.1.0
+
+environment:
+  sdk: '>=2.7.0 <3.0.0'
+
+dependencies:
+  effective_dart: ^1.2.4
+
+dev_dependencies:
+  test: ^1.14.4
