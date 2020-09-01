@@ -2,6 +2,202 @@ import 'package:deep_collection/deep_collection.dart';
 import 'package:test/test.dart';
 
 void main() {
+  group('Map - deepSearchByKey()', () {
+    test('Simple map - strings', () {
+      final map = {'a': 'a', 'c': 'c', 'b': 'b'};
+      final filteredMap = map.deepSearchByKey((key) => key == 'c');
+
+      expect(filteredMap.values, orderedEquals(['c']));
+      expect(filteredMap.keys, orderedEquals(['c']));
+    });
+
+    test('Simple map - strings - no match', () {
+      final map = {'a': 'a', 'c': 'c', 'b': 'b'};
+      final filteredMap = map.deepSearchByKey((key) => key == 'no-key');
+
+      expect(filteredMap, hasLength(0));
+    });
+
+    test('Simple map - integers', () {
+      final map = {1: 1, 3: 3, 2: 2};
+      final filteredMap = map.deepSearchByKey((key) => key == 3);
+
+      expect(filteredMap.values, orderedEquals([3]));
+      expect(filteredMap.keys, orderedEquals([3]));
+    });
+
+    test('Simple map - double', () {
+      final map = {1.3: 1.3, 3.2: 3.2, 2.1: 2.1};
+      final filteredMap = map.deepSearchByKey((key) => key == 3.2);
+
+      expect(filteredMap.values, orderedEquals([3.2]));
+      expect(filteredMap.keys, orderedEquals([3.2]));
+    });
+
+    test('Simple map - bool', () {
+      final map = {
+        1.3: 1.3,
+        3.2: 3.2,
+        2.1: 2.1,
+        true: true,
+        false: false,
+      };
+      final filteredMap = map.deepSearchByKey((key) => key == false);
+
+      expect(filteredMap.values, orderedEquals([false]));
+      expect(filteredMap.keys, orderedEquals([false]));
+    });
+
+    test('Simple map - various types: strings, doubles & integers', () {
+      final map = {
+        1.3: 1.3,
+        'b': 'b',
+        3.2: 3.2,
+        2: 2,
+        1: 1,
+        'a': 'a',
+        'c': 'c',
+        3: 3,
+        2.1: 2.1,
+      };
+      final filteredMap =
+          map.deepSearchByKey((key) => key != 'b' && key != 3.2 && key != '1');
+
+      expect(
+          filteredMap.values, unorderedEquals([1.3, 2, 1, 'a', 'c', 3, 2.1]));
+      expect(filteredMap.keys, unorderedEquals([1.3, 2, 1, 'a', 'c', 3, 2.1]));
+    });
+
+    test('Nested map - match in sublist', () {
+      final map = {
+        'c': 'c',
+        'a': {'x': 'c', 'z': 'b', 'q': 'a'},
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByKey((key) => key == 'q');
+
+      expect(filteredMap.keys, orderedEquals(['a']));
+      expect(filteredMap['a'], isMap);
+      expect((filteredMap['a'] as Map).values, orderedEquals(['a']));
+      expect((filteredMap['a'] as Map).keys, orderedEquals(['q']));
+    });
+
+    test('Nested map - match in main list and sublist', () {
+      final map = {
+        'c': 'c',
+        'a': {'x': 'c', 'z': 'b', 'b': 'z', 'q': 'a'},
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByKey((key) => key == 'b');
+
+      expect(filteredMap.keys, orderedEquals(['a', 'b']));
+      expect(filteredMap['b'], equals('b'));
+      expect(filteredMap['a'], isMap);
+      expect((filteredMap['a'] as Map).values, orderedEquals(['z']));
+      expect((filteredMap['a'] as Map).keys, orderedEquals(['b']));
+    });
+  });
+
+  // ###########################################################################
+
+  group('Map - deepSearchByValue()', () {
+    test('Simple map - strings', () {
+      final map = {'a': 'a', 'c': 'c', 'b': 'b'};
+      final filteredMap = map.deepSearchByValue((value) => value == 'c');
+
+      expect(filteredMap.values, orderedEquals(['c']));
+      expect(filteredMap.keys, orderedEquals(['c']));
+    });
+
+    test('Simple map - strings - no match', () {
+      final map = {'a': 'a', 'c': 'c', 'b': 'b'};
+      final filteredMap = map.deepSearchByValue((value) => value == 'no-val');
+
+      expect(filteredMap, hasLength(0));
+    });
+
+    test('Simple map - integers', () {
+      final map = {1: 1, 3: 3, 2: 2};
+      final filteredMap = map.deepSearchByValue((value) => value == 3);
+
+      expect(filteredMap.values, orderedEquals([3]));
+      expect(filteredMap.keys, orderedEquals([3]));
+    });
+
+    test('Simple map - double', () {
+      final map = {1.3: 1.3, 3.2: 3.2, 2.1: 2.1};
+      final filteredMap = map.deepSearchByValue((value) => value == 3.2);
+
+      expect(filteredMap.values, orderedEquals([3.2]));
+      expect(filteredMap.keys, orderedEquals([3.2]));
+    });
+
+    test('Simple map - bool', () {
+      final map = {
+        1.3: 1.3,
+        3.2: 3.2,
+        2.1: 2.1,
+        true: true,
+        false: false,
+      };
+      final filteredMap = map.deepSearchByValue((value) => value == false);
+
+      expect(filteredMap.values, orderedEquals([false]));
+      expect(filteredMap.keys, orderedEquals([false]));
+    });
+
+    test('Simple map - various types: strings, doubles & integers', () {
+      final map = {
+        1.3: 1.3,
+        'b': 'b',
+        3.2: 3.2,
+        2: 2,
+        1: 1,
+        'a': 'a',
+        'c': 'c',
+        3: 3,
+        2.1: 2.1,
+      };
+      final filteredMap = map.deepSearchByValue(
+          (value) => value != 'b' && value != 3.2 && value != '1');
+
+      expect(
+          filteredMap.values, unorderedEquals([1.3, 2, 1, 'a', 'c', 3, 2.1]));
+      expect(filteredMap.keys, unorderedEquals([1.3, 2, 1, 'a', 'c', 3, 2.1]));
+    });
+
+    test('Nested map - match in sublist', () {
+      final map = {
+        'c': 'c',
+        'a': {'x': 'c', 'z': 'b', 'q': 'a'},
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByValue((value) => value == 'a');
+
+      expect(filteredMap.keys, orderedEquals(['a']));
+      expect(filteredMap['a'], isMap);
+      expect((filteredMap['a'] as Map).values, orderedEquals(['a']));
+      expect((filteredMap['a'] as Map).keys, orderedEquals(['q']));
+    });
+
+    test('Nested map - match in main list and sublist', () {
+      final map = {
+        'c': 'c',
+        'a': {'x': 'c', 'z': 'b', 'q': 'a'},
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByValue((value) => value == 'b');
+
+      expect(filteredMap.keys, orderedEquals(['a', 'b']));
+      expect(filteredMap['b'], equals('b'));
+      expect(filteredMap['a'], isMap);
+      expect((filteredMap['a'] as Map).values, orderedEquals(['b']));
+      expect((filteredMap['a'] as Map).keys, orderedEquals(['z']));
+    });
+  });
+
+  // ###########################################################################
+
   group('Map - deepReverse()', () {
     test('Simple map - strings', () {
       final map = {'a': 'aa', 'c': 'cc', 'b': 'bb'};

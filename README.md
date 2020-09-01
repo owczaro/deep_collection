@@ -7,7 +7,7 @@
 
 # DeepCollection
 
-Extends `List`, `Set` and `Map` in order to add commonly used recursive methods such as sorting, reversing, finding intersections or differences.
+Extends `List`, `Set` and `Map` in order to add commonly used recursive methods such as searching, sorting, reversing, finding intersections or differences.
 
 ## Supported operations
 
@@ -23,6 +23,7 @@ Extends `List`, `Set` and `Map` in order to add commonly used recursive methods 
 
 ### Map
 
+- Deeply search (by keys and values) - does not accept nested [List] or [Set]
 - Deeply sort (by keys or values)
 - Deeply reverse
 - Deeply find intersections (by keys and values) - does not accept nested [List] or [Set]

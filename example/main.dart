@@ -44,6 +44,14 @@ void main() {
   print('Should be: {a, c, z, {q, x}}');
   print(set.deepSort());
 
+  print('\n________ Map: Deep search by key (key == "q") _______________');
+  print('Should be: {y: {q: qq}}');
+  print(baseMap.deepSearchByKey((key) => key == 'q'));
+
+  print('\n________ Map: Deep search by value (value == "xx") _______________');
+  print('Should be: {y: {x: xx}}');
+  print(baseMap.deepSearchByValue((value) => value == 'xx'));
+
   print('\n_________________ Map: Deep reverse ___________________________');
   print('Should be: {y: {q: qq, x: xx}, c: cc, a: aa, z: azz}');
   print(baseMap.deepReverse());

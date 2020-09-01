@@ -5,6 +5,34 @@ import 'set.dart';
 
 /// Extends [Map] in order to add recursion.
 extension DeepMap<K, V> on Map<K, V> {
+  /// Returns new instance of recursively filtered (by key) [Map].
+  /// Does not work with nested [List] and [Set] yet.
+  Map deepSearchByKey(bool predicate(dynamic key)) =>
+      LinkedHashMap.fromIterable(keys,
+          key: (k) => k,
+          value: (k) {
+            if (this[k] is Map) {
+              return (this[k] as Map).deepSearchByKey(predicate);
+            } else if (predicate(k)) {
+              return this[k];
+            }
+          })
+        ..removeWhere((key, value) => key == null || value == null);
+
+  /// Returns new instance of recursively filtered (by value) [Map].
+  /// Does not work with nested [List] and [Set] yet.
+  Map deepSearchByValue(bool predicate(V value)) =>
+      LinkedHashMap.fromIterable(keys,
+          key: (k) => k,
+          value: (k) {
+            if (this[k] is Map) {
+              return (this[k] as Map).deepSearchByValue(predicate);
+            } else if (predicate(this[k])) {
+              return this[k];
+            }
+          })
+        ..removeWhere((key, value) => value == null);
+
   /// Returns new instance of recursively reversed [Map].
   /// It reverses nested [List], [Set] or [Map] (primitive collections),
   /// nested primitive collections inside nested primitive collections
