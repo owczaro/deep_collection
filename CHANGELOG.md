@@ -1,3 +1,8 @@
+## [0.1.5] - 1st of September 2020
+
+- Map: add `deepSearchByKey`
+- Map: add `deepSearchByValue`
+
 ## [0.1.4] - 1st of September 2020
 
 - Map: add `deepIntersectionByKey`

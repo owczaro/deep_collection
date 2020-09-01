@@ -1,6 +1,6 @@
 name: deep_collection
 description: Extends [List], [Set] and [Map] in order to add commonly used recursive methods such as sorting, reversing, finding intersections or differences.
-version: 0.1.4
+version: 0.1.5
 homepage: https://github.com/owczaro/deep_collection
 
 environment:
