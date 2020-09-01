@@ -17,7 +17,8 @@ extension DeepMap<K, V> on Map<K, V> {
               return this[k];
             }
           })
-        ..removeWhere((key, value) => key == null || value == null);
+        ..removeWhere(
+            (key, value) => value == null || (value is Map && value.isEmpty));
 
   /// Returns new instance of recursively filtered (by value) [Map].
   /// Does not work with nested [List] and [Set] yet.
@@ -31,7 +32,8 @@ extension DeepMap<K, V> on Map<K, V> {
               return this[k];
             }
           })
-        ..removeWhere((key, value) => value == null);
+        ..removeWhere(
+            (key, value) => value == null || (value is Map && value.isEmpty));
 
   /// Returns new instance of recursively reversed [Map].
   /// It reverses nested [List], [Set] or [Map] (primitive collections),
