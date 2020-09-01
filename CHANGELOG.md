@@ -1,3 +1,7 @@
+## [0.1.5+1] - 1st of September 2020
+
+- Map: remove empty maps from results in `deepSearchByKey` and `deepSearchByValue`
+
 ## [0.1.5] - 1st of September 2020
 
 - Map: add `deepSearchByKey`

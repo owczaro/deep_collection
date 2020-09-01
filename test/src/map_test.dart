@@ -82,6 +82,17 @@ void main() {
       expect((filteredMap['a'] as Map).keys, orderedEquals(['q']));
     });
 
+    test('Nested map - no match', () {
+      final map = {
+        'c': 'c',
+        'a': {'x': 'c', 'z': 'b', 'q': 'a'},
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByKey((key) => key == 'q-no-ma');
+
+      expect(filteredMap, isEmpty);
+    });
+
     test('Nested map - match in main list and sublist', () {
       final map = {
         'c': 'c',
@@ -164,6 +175,17 @@ void main() {
       expect(
           filteredMap.values, unorderedEquals([1.3, 2, 1, 'a', 'c', 3, 2.1]));
       expect(filteredMap.keys, unorderedEquals([1.3, 2, 1, 'a', 'c', 3, 2.1]));
+    });
+
+    test('Nested map - no match', () {
+      final map = {
+        'c': 'c',
+        'a': {'x': 'c', 'z': 'b', 'q': 'a'},
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByValue((value) => value == 'a-no-ma');
+
+      expect(filteredMap.keys, isEmpty);
     });
 
     test('Nested map - match in sublist', () {
