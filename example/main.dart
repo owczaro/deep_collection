@@ -36,6 +36,14 @@ void main() {
   print('Should be: [a, c, z, [q, x]]');
   print(list.deepSort());
 
+  print('\n_________________ List: Deep copy ___________________________');
+  print('Should be: [z, a, c, [x, q]]');
+  print(list.deepCopy());
+
+  print('\n______________ List: Deep search by value ________________________');
+  print('Should be: [z, a, [x]]');
+  print(list.deepSearchByValue((value) => ['a', 'z', 'x'].contains(value)));
+
   print('\n___________________ Set: Deep reverse ____________________________');
   print('Should be: {c, {q, x}, a, z}');
   print(set.deepReverse());
@@ -43,6 +51,14 @@ void main() {
   print('\n____________________ Set: Deep sort ______________________________');
   print('Should be: {a, c, z, {q, x}}');
   print(set.deepSort());
+
+  print('\n_________________ Set: Deep copy ___________________________');
+  print('Should be: {z, a, {x, q}, c}');
+  print(set.deepCopy());
+
+  print('\n______________ Set: Deep search by value ________________________');
+  print('Should be: {z, a, {x}}');
+  print(set.deepSearchByValue((value) => ['a', 'z', 'x'].contains(value)));
 
   print('\n________ Map: Deep search by key (key == "q") _______________');
   print('Should be: {y: {q: qq}}');
@@ -79,4 +95,13 @@ void main() {
   print('\n______________ Map: Deep intersection by key _____________________');
   print('Should be: {a: aa, c: cc, y: {x: xx, q: qq}}');
   print(baseMap.deepIntersectionByKey(mapToCompare));
+
+  print('\n_________________ Map: Deep copy ___________________________');
+  print('Should be: {z: azz, a: aa, c: cc, y: {x: xx, q: qq}}');
+  print(baseMap.deepCopy());
+
+  print('\n_________________ Map: Deep merge ___________________________');
+  print('Should be: {z: azz, a: [aa, aa], c: [cc, cc], '
+      'y: {x: [xx, xx-diff], q: [qq, qq]}, z-diff: azz}');
+  print(baseMap.deepMerge(mapToCompare));
 }

@@ -9,15 +9,15 @@ extension DeepList<E> on List<E> {
   /// and so on.
   List<E> deepReverse() {
     var result = <E>[];
-    for (var i in List.generate(length, (index) => index++).reversed) {
+    for (var i = length - 1; i >= 0; i--) {
       var element;
       element = elementAt(i);
       if (element is Set) {
-        element = (element as Set).deepReverse();
+        element = element.deepReverse();
       } else if (element is List) {
-        element = (element as List).deepReverse();
+        element = element.deepReverse();
       } else if (element is Map) {
-        element = (element as Map).deepReverse();
+        element = element.deepReverse();
       }
 
       result.add(element);
@@ -72,6 +72,54 @@ extension DeepList<E> on List<E> {
       ...sets.cast<E>(),
       ...maps.cast<E>(),
     ];
+  }
+
+  /// https://stackoverflow.com/questions/64594543/how-to-deep-copy-nested-list-in-dart
+  ///
+  /// so called shallow copy
+  List<E> deepCopy() {
+    var newList = [];
+
+    forEach((el) {
+      if (el is List) {
+        newList.add(el.deepCopy());
+      } else if (el is Set) {
+        newList.add((el.deepCopy()));
+      } else if (el is Map) {
+        newList.add((el.deepCopy()));
+      } else {
+        newList.add(el);
+      }
+    });
+
+    return newList.cast<E>();
+  }
+
+  /// Returns new instance of recursively filtered (by value) [List].
+  List deepSearchByValue<V>(bool predicate(V value)) {
+    var newList = [];
+    forEach((element) {
+      if (element is List) {
+        var newElement = element.deepSearchByValue<V>(predicate);
+        if (newElement.isNotEmpty) {
+          newList.add(newElement);
+        }
+      } else if (element is Set) {
+        var newElement = element.deepSearchByValue(predicate);
+        if (newElement.isNotEmpty) {
+          newList.add(newElement);
+        }
+      } else if (element is Map) {
+        var newElement = element.deepSearchByValue(predicate);
+        if (newElement.isNotEmpty) {
+          newList.add(newElement);
+        }
+      } else if (element is V && predicate(element)) {
+        newList.add(element);
+      }
+    });
+
+    return newList;
   }
 }
 

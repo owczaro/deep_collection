@@ -1,6 +1,8 @@
 import 'package:deep_collection/deep_collection.dart';
 import 'package:test/test.dart';
 
+import '../models/test_model.dart';
+
 void main() {
   group('List - deepReverse()', () {
     test('Simple list - strings', () {
@@ -79,8 +81,6 @@ void main() {
       expect((reversedList[1] as Map).keys, orderedEquals(['s', 'q']));
     });
   });
-
-  // ###########################################################################
 
   group('List - deepSort()', () {
     test('Simple list - strings', () {
@@ -237,6 +237,105 @@ void main() {
       expect(sortedList[5], isList);
       expect(sortedList[6], isA<Set>());
       expect(sortedList[7], isMap);
+    });
+  });
+
+  group('List - deepCopy()', () {
+    test('Simple list of strings', () {
+      final list = ['a', 'c', 'x'];
+      expect(list.deepCopy(), list);
+    });
+
+    test('Nested list', () {
+      final list = [
+        'a',
+        'c',
+        ['a', 'c'],
+        'x'
+      ];
+      expect(list.deepCopy(), list);
+    });
+
+    test('Nested set', () {
+      final list = [
+        'a',
+        'c',
+        {'a', 'c'},
+        'x'
+      ];
+      expect(list.deepCopy(), list);
+    });
+
+    test('Nested map', () {
+      final list = [
+        'a',
+        'c',
+        {'a': 'b', 'c': 'd'},
+        'x'
+      ];
+      expect(list.deepCopy(), list);
+    });
+  });
+
+  group('List - deepSearchByValue()', () {
+    test('Simple list of strings', () {
+      final list = ['a', 'c', 'x'];
+      expect(
+        list.deepSearchByValue<String>((value) => value == 'c'),
+        ['c'],
+      );
+    });
+
+    test('Nested list of strings', () {
+      final list = [
+        'a',
+        ['c', 'x']
+      ];
+      expect(
+        list.deepSearchByValue<String>((value) => value == 'c'),
+        [
+          ['c']
+        ],
+      );
+    });
+
+    test('Simple list of objects', () {
+      final list = [
+        TestObject('a', 11),
+        TestObject('b', 12),
+        TestObject('c', 1),
+      ];
+      expect(
+        list.deepSearchByValue<TestObject>(
+            (value) => value.name == list.last.name),
+        [list.last],
+      );
+    });
+
+    test('Nested set of strings', () {
+      final list = [
+        'a',
+        {'c', 'x'}
+      ];
+      expect(
+        list.deepSearchByValue<String>((value) => value == 'c'),
+        [
+          {'c'}
+        ],
+      );
+    });
+
+    test('Nested map of strings', () {
+      final list = [
+        'a',
+        {'c': 'd', 'x': 'z'}
+      ];
+      expect(
+        list.deepSearchByValue<String>((value) => value == 'd'),
+        [
+          {'c': 'd'}
+        ],
+      );
     });
   });
 }

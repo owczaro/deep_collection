@@ -6,8 +6,8 @@ import 'set.dart';
 /// Extends [Map] in order to add recursion.
 extension DeepMap<K, V> on Map<K, V> {
   /// Returns new instance of recursively filtered (by key) [Map].
-  /// Does not work with nested [List] and [Set] yet.
-  Map deepSearchByKey(bool predicate(dynamic key)) =>
+  /// Does not work with keys as [List] and [Set] yet.
+  Map deepSearchByKey(bool predicate(Object? key)) =>
       LinkedHashMap.fromIterable(keys,
           key: (k) => k,
           value: (k) {
@@ -21,14 +21,17 @@ extension DeepMap<K, V> on Map<K, V> {
             (key, value) => value == null || (value is Map && value.isEmpty));
 
   /// Returns new instance of recursively filtered (by value) [Map].
-  /// Does not work with nested [List] and [Set] yet.
-  Map deepSearchByValue(bool predicate(V value)) =>
+  Map deepSearchByValue<V>(bool predicate(V value)) =>
       LinkedHashMap.fromIterable(keys,
           key: (k) => k,
           value: (k) {
             if (this[k] is Map) {
-              return (this[k] as Map).deepSearchByValue(predicate);
-            } else if (predicate(this[k])) {
+              return (this[k] as Map).deepSearchByValue<V>(predicate);
+            } else if (this[k] is List) {
+              return (this[k] as List).deepSearchByValue<V>(predicate);
+            } else if (this[k] is Set) {
+              return (this[k] as Set).deepSearchByValue<V>(predicate);
+            } else if (this[k] is V && predicate(this[k] as V)) {
               return this[k];
             }
           })
@@ -105,7 +108,7 @@ extension DeepMap<K, V> on Map<K, V> {
   /// 5. All [Map] sorted by length
   Map<K, V> deepSortByValue() {
     var intAndDoubleValues = Map<dynamic, dynamic>.fromEntries(entries
-        .where((element) => element?.value is int || element?.value is double));
+        .where((element) => element.value is int || element.value is double));
 
     var sortedKeysFromIntAndDoubleValues = intAndDoubleValues.keys.toList(
         growable: false)
@@ -116,7 +119,7 @@ extension DeepMap<K, V> on Map<K, V> {
         value: (k) => intAndDoubleValues[k]);
 
     var stringValues = Map<dynamic, dynamic>.fromEntries(
-        entries.where((element) => element?.value is String));
+        entries.where((element) => element.value is String));
     var sortedKeysFromStringValues = stringValues.keys.toList(growable: false)
       ..sort((a, b) => stringValues[a].compareTo(stringValues[b]));
     var sortedStringValues = LinkedHashMap.fromIterable(
@@ -125,7 +128,7 @@ extension DeepMap<K, V> on Map<K, V> {
         value: (k) => stringValues[k]);
 
     var listValues = Map<dynamic, dynamic>.fromEntries(
-        entries.where((element) => element?.value is List));
+        entries.where((element) => element.value is List));
     listValues.forEach((key, value) {
       listValues[key] = (value as List).deepSort();
     });
@@ -138,7 +141,7 @@ extension DeepMap<K, V> on Map<K, V> {
         key: (k) => k, value: (k) => listValues[k]);
 
     var setValues = Map<dynamic, dynamic>.fromEntries(
-        entries.where((element) => element?.value is Set));
+        entries.where((element) => element.value is Set));
     setValues.forEach((key, value) {
       setValues[key] = (value as Set).deepSort();
     });
@@ -149,7 +152,7 @@ extension DeepMap<K, V> on Map<K, V> {
         key: (k) => k, value: (k) => setValues[k]);
 
     var mapValues = Map<dynamic, dynamic>.fromEntries(
-        entries.where((element) => element?.value is Map));
+        entries.where((element) => element.value is Map));
     mapValues.forEach((key, value) {
       mapValues[key] = (value as Map).deepSortByValue();
     });
@@ -275,10 +278,51 @@ extension DeepMap<K, V> on Map<K, V> {
 
     return intersection;
   }
+
+  /// Merges current [Map] with [toMerge] by key.
+  Map deepMerge(Map toMerge) {
+    var source = <K, dynamic>{...this};
+    for (var key in toMerge.keys) {
+      if (source.containsKey(key) && source[key] is Map) {
+        if (toMerge[key] is Map) {
+          source[key] = (source[key] as Map).deepMerge(toMerge[key]);
+        } else {
+          source[key] = (source[key] as Map).deepMerge({key: toMerge[key]});
+        }
+      } else if (source.containsKey(key) && toMerge.containsKey(key)) {
+        source[key] = [source[key], toMerge[key]];
+      } else {
+        source[key] = toMerge[key];
+      }
+    }
+
+    return source;
+  }
+
+  /// https://stackoverflow.com/questions/64594543/how-to-deep-copy-nested-list-in-dart
+  ///
+  /// so called shallow copy
+  Map deepCopy() {
+    var newMap = {};
+
+    forEach((key, value) {
+      if (value is Map) {
+        newMap.addAll({key: value.deepCopy()});
+      } else if (value is List) {
+        newMap.addAll({key: value.deepCopy()});
+      } else if (value is Set) {
+        newMap.addAll({key: value.deepCopy()});
+      } else {
+        newMap.addAll({key: value});
+      }
+    });
+
+    return newMap;
+  }
 }
 
 /// Returns new instance of deeply sorted (by keys) [Set].
-/// In fact this is a port to iterate throw a set inside a map
+/// In fact this is a port to iterate through a set inside a map
 /// and sort nested maps.
 Set<E> _deepSortByKeyInSet<E>(Set<E> set) {
   var values = <dynamic>{};
@@ -298,7 +342,7 @@ Set<E> _deepSortByKeyInSet<E>(Set<E> set) {
 }
 
 /// Returns new instance of deeply sorted (by keys) [List].
-/// In fact this is a port to iterate throw a list inside a map
+/// In fact this is a port to iterate through a list inside a map
 /// and sort nested maps.
 List<E> _deepSortByKeyInList<E>(List<E> list) {
   var values = <dynamic>[];

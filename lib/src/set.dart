@@ -26,4 +26,13 @@ extension DeepSet<E> on Set<E> {
   /// 4. All [Set] sorted by length
   /// 5. All [Map] sorted by length
   Set<E> deepSort() => toList(growable: false).deepSort().toSet().cast<E>();
+
+  /// https://stackoverflow.com/questions/64594543/how-to-deep-copy-nested-list-in-dart
+  ///
+  /// so called shallow copy
+  Set<E> deepCopy() => toList(growable: false).deepCopy().toSet().cast<E>();
+
+  /// Returns new instance of recursively filtered (by value) [Set].
+  Set deepSearchByValue<V>(bool predicate(V value)) =>
+      toList(growable: false).deepSearchByValue<V>(predicate).toSet().cast<E>();
 }

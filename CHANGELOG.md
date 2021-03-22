@@ -1,3 +1,11 @@
+## [1.0.0] - 22th of March 2021
+
+- Null safety support
+- List: add `deepCopy` and `deepSearchByValue`
+- Set: add `deepCopy` and `deepSearchByValue`
+- Map: add 'deepMerge' and 'deepCopy'; `deepSearchByValue` works with nested lists and sets
+- Add more tests
+
 ## [0.1.5+1] - 1st of September 2020
 
 - Map: remove empty maps from results in `deepSearchByKey` and `deepSearchByValue`
