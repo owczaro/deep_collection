@@ -120,6 +120,30 @@ void main() {
       expect(filteredMap.keys, orderedEquals(['c']));
     });
 
+    test('Nested list of strings', () {
+      final map = {
+        'a': 'a',
+        'c': ['dd', 'zzz'],
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByValue((value) => value == 'zzz');
+
+      expect(filteredMap.keys, orderedEquals(['c']));
+      expect(filteredMap['c'], orderedEquals(['zzz']));
+    });
+
+    test('Nested set of strings', () {
+      final map = {
+        'a': 'a',
+        'c': {'dd', 'zzz'},
+        'b': 'b'
+      };
+      final filteredMap = map.deepSearchByValue((value) => value == 'zzz');
+
+      expect(filteredMap.keys, orderedEquals(['c']));
+      expect(filteredMap['c'], orderedEquals(['zzz']));
+    });
+
     test('Simple map - strings - no match', () {
       final map = {'a': 'a', 'c': 'c', 'b': 'b'};
       final filteredMap = map.deepSearchByValue((value) => value == 'no-val');
@@ -1484,6 +1508,98 @@ void main() {
 
       expect(intersection.keys, orderedEquals(['h', 'c', 'i', 'd', 'e', 'j']));
       expect((intersection['j'] as Map).keys, orderedEquals(['g', 'b']));
+    });
+  });
+
+  // ###########################################################################
+
+  group('Map - deepMerge()', () {
+    test('Simple map - merge new key', () {
+      final map = {'a': 'a', 'c': 'c', 'b': 'b'};
+      final mergedMap = map.deepMerge({'d': 'd'});
+
+      expect(mergedMap.values, orderedEquals(['a', 'c', 'b', 'd']));
+      expect(mergedMap.keys, orderedEquals(['a', 'c', 'b', 'd']));
+    });
+
+    test('Simple map - merge existing key but new value', () {
+      final map = {'a': 'a', 'c': 'c', 'b': 'b'};
+      final mergedMap = map.deepMerge({'a': 'd'});
+
+      expect(mergedMap['a'], orderedEquals(['a', 'd']));
+    });
+
+    test('Simple map - merge existing key and exiting value', () {
+      final map = {'a': 'a', 'c': 'c', 'b': 'b'};
+      final mergedMap = map.deepMerge({'a': 'a'});
+
+      expect(mergedMap['a'], orderedEquals(['a', 'a']));
+    });
+
+    test('Source with nested map', () {
+      final map = {
+        'a': {'x': 'a'},
+        'c': 'c',
+        'b': 'b'
+      };
+      final mergedMap = map.deepMerge({'a': 'p'});
+
+      expect((mergedMap['a'] as Map).keys, orderedEquals(['x', 'a']));
+      expect((mergedMap['a'] as Map).values, orderedEquals(['a', 'p']));
+    });
+
+    test('Source and toMerge with nested map', () {
+      final map = {
+        'a': {'x': 'a'},
+        'c': 'c',
+        'b': 'b'
+      };
+      final mergedMap = map.deepMerge({
+        'a': {'b': 'p'}
+      });
+
+      expect((mergedMap['a'] as Map).keys, orderedEquals(['x', 'b']));
+      expect((mergedMap['a'] as Map).values, orderedEquals(['a', 'p']));
+    });
+  });
+
+  // ###########################################################################
+
+  group('Map - deepCopy()', () {
+    test('simple map', () {
+      final map = {'a': 'b', 'c': 'd'};
+      expect(map.deepCopy(), map);
+    });
+
+    test('Nested list', () {
+      final map = {
+        'a': ['b', 'e'],
+        'c': 'd'
+      };
+      final copiedMap = map.deepCopy();
+      expect(copiedMap, map);
+      expect(copiedMap['a'], containsAllInOrder(['b', 'e']));
+    });
+
+    test('Nested set', () {
+      final map = {
+        'a': {'b', 'e'},
+        'c': 'd'
+      };
+      final copiedMap = map.deepCopy();
+      expect(copiedMap, map);
+      expect(copiedMap['a'], containsAllInOrder(['b', 'e']));
+    });
+
+    test('Nested map', () {
+      final map = {
+        'a': {'b': 'f', 'e': 'g'},
+        'c': 'd'
+      };
+      final copiedMap = map.deepCopy();
+      expect(copiedMap, map);
+      expect((copiedMap['a'] as Map).values, containsAllInOrder(['f', 'g']));
+      expect((copiedMap['a'] as Map).keys, containsAllInOrder(['b', 'e']));
     });
   });
 }
