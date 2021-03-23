@@ -1,3 +1,7 @@
+## [1.0.1] - 23th of March 2021
+
+- Remove shadowing type parameter in `lib/src/map.dart:24:25`
+
 ## [1.0.0] - 22th of March 2021
 
 - Null safety support
