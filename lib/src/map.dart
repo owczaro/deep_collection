@@ -21,17 +21,17 @@ extension DeepMap<K, V> on Map<K, V> {
             (key, value) => value == null || (value is Map && value.isEmpty));
 
   /// Returns new instance of recursively filtered (by value) [Map].
-  Map deepSearchByValue<V>(bool predicate(V value)) =>
+  Map deepSearchByValue<E>(bool predicate(E value)) =>
       LinkedHashMap.fromIterable(keys,
           key: (k) => k,
           value: (k) {
             if (this[k] is Map) {
-              return (this[k] as Map).deepSearchByValue<V>(predicate);
+              return (this[k] as Map).deepSearchByValue<E>(predicate);
             } else if (this[k] is List) {
-              return (this[k] as List).deepSearchByValue<V>(predicate);
+              return (this[k] as List).deepSearchByValue<E>(predicate);
             } else if (this[k] is Set) {
-              return (this[k] as Set).deepSearchByValue<V>(predicate);
-            } else if (this[k] is V && predicate(this[k] as V)) {
+              return (this[k] as Set).deepSearchByValue<E>(predicate);
+            } else if (this[k] is E && predicate(this[k] as E)) {
               return this[k];
             }
           })
